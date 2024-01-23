@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(
-    name="exussum-pre-commit-jira-log",
+    name="pre-commit-jira-log",
     scripts=[
         "scripts/populate_message",
         "scripts/enforce_prefix_github",
