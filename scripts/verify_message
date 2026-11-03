@@ -3,6 +3,7 @@
 import sys
 import re
 import os
+import subprocess
 
 if __name__ == "__main__":
     if os.environ.get("JIRA_PROJECTS"):
@@ -11,6 +12,14 @@ if __name__ == "__main__":
         prefix = '^[\w\d]+'
 
     project_re = re.compile(prefix + '-\d+: ')
+
+    # `git merge` runs this hook too; let its default "Merge ..." message through.
+    merge_head = subprocess.run(
+        ("git", "rev-parse", "--git-path", "MERGE_HEAD"),
+        stdout=subprocess.PIPE, text=True,
+    ).stdout.strip()
+    if merge_head and os.path.exists(merge_head):
+        exit()
 
     for line in open(sys.argv[1]):
         if re.match(line, "^\s+$"):

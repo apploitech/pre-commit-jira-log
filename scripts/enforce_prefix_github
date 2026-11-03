@@ -47,7 +47,9 @@ if __name__ == "__main__":
     bad_commits = [
         commit
         for commit in chain.from_iterable(revs)
-        if not project_re.match(commit.message)
+        # Merge commits (e.g. "Merge branch 'master' into ...") carry git's or
+        # GitHub's default message, not a ticket key, so they are not checked.
+        if len(commit.parents) < 2 and not project_re.match(commit.message)
     ]
     if bad_commits:
         err = 'The following commits do not follow the format "KEY-123: commit message..."\n'
